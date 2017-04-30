@@ -1,7 +1,10 @@
-#
-# Dockerfile to run lammps on a debian base install
+# Copyright (c) University of Rochester
+# Distributed under GPL License 3.0
+# ------------------------------------------------
+# Dockerfile to run lammps on a debian base install with plumed 
 
 FROM debian:sid
+MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 RUN apt-get update
 RUN apt-get install -y git make gcc gfortran wget bc python-dev fftw3-dev mpich g++ libjpeg-dev libpng-dev libblas-dev libgsl0-dev xxd

@@ -1,20 +1,23 @@
-#
-# Dockerfile to run lammps on a debian base install
+# Copyright (c) University of Rochester
+# Distributed under GPL License 3.0
+# ------------------------------------------------
+# Dockerfile to run lammps on a debian base install with electronic-dance-music pacakge
 
 FROM debian:sid
+
+MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 RUN apt-get update
 RUN apt-get install -y git make gcc gfortran wget bc python-dev fftw3-dev mpich g++ libjpeg-dev libpng-dev libblas-dev libgsl0-dev xxd cmake libboost-all-dev
 
 RUN git clone https://github.com/whitead/electronic-dance-music /srv/edm
-
 RUN git clone https://github.com/lammps/lammps.git /srv/lammps
 
 
 WORKDIR /srv/edm
 RUN mkdir build
 WORKDIR /srv/edm/build
-RUN cmake .. -DLAMMPS_SRC="/srv/lammps/src"
+RUN cmake .. -DLAMMPS_SRC=/srv/lammps/src
 RUN make
 RUN make install
 RUN make patch

@@ -1,4 +1,11 @@
-FROM notebook-extensions
+# Copyright (c) University of Rochester
+# Distributed under GPL License 3.0
+# ------------------------------------------------
+# Dockerfile to run rdkit and graphviz in an nb-extensions enbled jupyter notebook
+
+
+FROM whitelab/python/notebook-extensions
+MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 USER jovyan
 RUN conda clean -a

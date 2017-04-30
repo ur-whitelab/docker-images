@@ -1,4 +1,10 @@
+# Copyright (c) University of Rochester
+# Distributed under GPL License 3.0
+# ------------------------------------------------
+# Dockerfile to run gromacs on an ubuntu base install with plumed 
+
 FROM ubuntu:zesty
+MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 #enable contributed packages
 RUN sed -i 's/main/main contrib/g' /etc/apt/sources.list

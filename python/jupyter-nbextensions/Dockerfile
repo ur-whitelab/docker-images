@@ -1,4 +1,10 @@
+# Copyright (c) University of Rochester
+# Distributed under GPL License 3.0
+# ------------------------------------------------
+# Dockerfile to run jupyter notebooks with the nb extensions enabled
+
 FROM jupyter/scipy-notebook
+MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 USER jovyan
 
