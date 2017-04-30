@@ -50,3 +50,21 @@ RUN sed -i 's/DFLAGS\s\+=\(.*\)/DFLAGS=\1 -D__PLUMED2/' arch/local.ssmp
 #now compile
 RUN source /srv/cp2k/cp2k/tools/toolchain/install/setup
 RUN cd /srv/cp2k/cp2k/makefiles/ && make -j4 ARCH=local VERSION=ssmp
+
+#install
+RUN ln -s /srv/cp2k/cp2k/exe/local/cp2k.ssmp /usr/bin/cp2k
+RUN ldconfig
+
+#setup bash terminal
+ENV SHELL /bin/bash
+ENV USER whitelab
+ENV UID 1000
+ENV HOME /home/$USER
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Create whitelab user with UID=1000 and in the 'users' group
+RUN useradd -m -s /bin/bash -N -u $UID $USER
+USER $USER
+RUN mkdir /home/$USER/scratch
+WORKDIR /home/$USER/scratch
