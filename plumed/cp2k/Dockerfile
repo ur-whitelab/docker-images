@@ -13,15 +13,17 @@ RUN apt-get install -y build-essential \
 		       g++ \
 		       gfortran \
 		       libatlas-dev \
-		       libblas-dev \
-		       libopenblas-dev \
+		       liblapack-dev \
 		       libmpich-dev \
 		       libscalapack-mpi-dev \
 		       git \
 		       python \
 		       libfftw3-dev \
 		       wget \
-		       cmake
+		       cmake \
+		       xxd \
+		       libgsl0-dev \
+		       libz-dev
 
 #need to switch to bash to utilize source 
 RUN echo "dash dash/sh boolean false" | debconf-set-selections
@@ -39,9 +41,12 @@ WORKDIR /srv/cp2k/cp2k
 RUN cd tools/toolchain && ./install_cp2k_toolchain.sh --with-fftw=system --with-reflapack=no
 RUN cp tools/toolchain/install/arch/* arch
 
-#now prepare to compile
-RUN source /srv/cp2k/cp2k/tools/toolchain/install/setup
 #add plumed2 to arch file
+RUN apt-get install -y libz-dev
 RUN echo "include /usr/local/lib/plumed/src/lib/Plumed.inc.shared" >> arch/local.ssmp
-RUN echo "LIBS=$(LIBS) -lz -ldl -lstdc++ -lmpi_cxx -lrt -lplumed" >> arch/local.ssmp
-RUN cd /srv/cp2k/cp2k/makefiles/ && make -j2 ARCH=local VERSION=ssmp
+RUN sed -i 's/LIBS\s\+=\(.*\)/LIBS=\1 -lz -lmpi_cxx -lrt -lplumed/' arch/local.ssmp
+RUN sed -i 's/DFLAGS\s\+=\(.*\)/DFLAGS=\1 -D__PLUMED2/' arch/local.ssmp
+
+#now compile
+RUN source /srv/cp2k/cp2k/tools/toolchain/install/setup
+RUN cd /srv/cp2k/cp2k/makefiles/ && make -j4 ARCH=local VERSION=ssmp
