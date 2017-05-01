@@ -39,6 +39,7 @@ WORKDIR /srv/cp2k/cp2k
 RUN cd tools/toolchain && \
     ./install_cp2k_toolchain.sh --with-fftw=system --with-reflapack=no && \
     rm build/*tgz && \
+    rm build/*tar.gz && \
     cp install/arch/* arch 
 
 #add plumed2 to arch file
