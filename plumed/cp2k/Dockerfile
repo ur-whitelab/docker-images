@@ -31,6 +31,7 @@ RUN dpkg-reconfigure -f noninteractive dash
 #get plumed2 installed
 RUN git clone https://github.com/whitead/plumed2 /srv/plumed
 WORKDIR /srv/plumed
+RUN git checkout cn-moment-pr
 RUN ./configure --enable-modules=all && make -j4 && make install && make clean
 
 #get cp2k and dependencies
@@ -39,8 +40,8 @@ WORKDIR /srv/cp2k/cp2k
 RUN cd tools/toolchain && \
     ./install_cp2k_toolchain.sh --with-fftw=system --with-reflapack=no && \
     rm build/*tgz && \
-    rm build/*tar.gz && \
-    cp install/arch/* arch 
+    rm build/*tar.gz
+RUN  cp tools/toolchain/install/arch/* /srv/cp2k/cp2k/arch 
 
 #add plumed2 to arch file
 RUN echo "include /usr/local/lib/plumed/src/lib/Plumed.inc.shared" >> arch/local.ssmp
@@ -50,9 +51,11 @@ RUN sed -i 's/DFLAGS\s\+=\(.*\)/DFLAGS=\1 -D__PLUMED2/' arch/local.ssmp
 #now compile
 RUN source /srv/cp2k/cp2k/tools/toolchain/install/setup
 RUN cd /srv/cp2k/cp2k/makefiles/ && \
-    make -j4 ARCH=local VERSION=ssmp && \
-    cp /srv/cp2k/cp2k/exe/local/cp2k.ssmp /usr/bin/cp2k && \
-    make clean
+    make -j8 ARCH=local VERSION="sopt popt ssmp psmp" && \
+    cp /srv/cp2k/cp2k/exe/local/cp2k.* /usr/bin && \
+    make ARCH=local VERSION="sopt popt ssmp psmp" clean
+
+RUN ln -s  /usr/bin/cp2k.ssmp /usr/bin/cp2k
 
 #Make plumed locatable
 RUN ldconfig
