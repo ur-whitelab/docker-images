@@ -8,7 +8,7 @@ MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 USER jovyan
 
-RUN conda install -c conda-forge jupyter_contrib_nbextensions
+RUN conda install -c conda-forge jupyter_contrib_nbextensions && conda clean
 RUN jupyter contrib nbextension install --user
 RUN jupyter nbextension enable spellcheck/main
 RUN jupyter nbextension enable chrome-clipboard/main

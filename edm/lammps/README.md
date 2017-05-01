@@ -1,18 +1,19 @@
 Lammps with Electronic Dance Music
 =====
 
-See (github.com/whitead/electronic-dance-music)[https://github.com/whitead/electronic-dance-music]
+See [github.com/whitead/electronic-dance-music](https://github.com/whitead/electronic-dance-music) for information
+on EDM.
 
 Usage
 ----
 
 To use interactively use 
 ```
-docker run --rm -it -v '/where/your/siminput/is:/home/whitelab/scratch' whitelab/plumed-lammps bash
+docker run --rm -it -v '/where/your/siminput/is:/home/whitelab/scratch' whitelab/edm-lammps bash
 ```
 All files in `/where/your/siminput/is` directory will be shared between your machine and the container. Use the command `lammps` to execute lammps. You can also run an input script without entering the container with this command:
 ```
-docker run --rm -it -v 'where/your/siminput/is:/home/whitelab/scratch/' whitelab/plumed-lammps lammps -in input_file
+docker run --rm -it -v 'where/your/siminput/is:/home/whitelab/scratch/' whitelab/edm-lammps lammps -in input_file
 ```
 
 Notes

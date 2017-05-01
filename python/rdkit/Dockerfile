@@ -4,14 +4,12 @@
 # Dockerfile to run rdkit and graphviz in an nb-extensions enbled jupyter notebook
 
 
-FROM whitelab/python/notebook-extensions
+FROM whitelab/python-jupyter-nbextensions
 MAINTAINER Andrew White <andrew.white@rochester.edu>
 
-USER jovyan
-RUN conda clean -a
-RUN conda install -c rdkit rdkit
 USER root
-RUN apt-get update
-RUN apt-get install -y libgraphviz-dev graphviz pkg-config
+RUN apt-get update && apt-get install -y libgraphviz-dev graphviz pkg-config && apt-get clean
+
 USER jovyan
+RUN conda install -y -c rdkit rdkit && conda clean -a
 RUN pip3 install pygraphviz

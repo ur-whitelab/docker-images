@@ -8,26 +8,25 @@ FROM debian:sid
 MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 RUN apt-get update
-RUN apt-get install -y git make gcc gfortran wget bc python-dev fftw3-dev mpich g++ libjpeg-dev libpng-dev libblas-dev libgsl0-dev xxd cmake libboost-all-dev
+RUN apt-get install -y git make gcc gfortran wget bc python-dev fftw3-dev mpich g++ libjpeg-dev libpng-dev libblas-dev libgsl0-dev xxd cmake libboost-all-dev && apt-get clean
 
 RUN git clone https://github.com/whitead/electronic-dance-music /srv/edm
 RUN git clone https://github.com/lammps/lammps.git /srv/lammps
 
 
 WORKDIR /srv/edm
-RUN mkdir build
-WORKDIR /srv/edm/build
-RUN cmake .. -DLAMMPS_SRC=/srv/lammps/src
-RUN make
-RUN make install
-RUN make patch
+RUN mkdir build && cd build &&  \
+    cmake .. -DLAMMPS_SRC=/srv/lammps/src && \
+    make install && \
+    make patch && \
+    cd .. && rm -r build 
 
 WORKDIR /srv/lammps/src
 RUN python Make.py -m ubuntu -fft fftw3 -a file
 RUN python Make.py -a lib-meam lib-poems lib-reax
 RUN python Make.py -p standard no-compress no-gpu no-kim no-kokkos no-voronoi no-mscg
 RUN make yes-user-edm
-RUN make -j4 auto && cp lmp_auto /usr/bin/lmp_mpi
+RUN make -j4 auto && cp lmp_auto /usr/bin/lmp_mpi && make clean-all
 
 RUN ln -s /srv/lmp_mpi /usr/bin/lammps
 
