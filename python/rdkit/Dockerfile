@@ -12,4 +12,4 @@ RUN apt-get update && apt-get install -y libgraphviz-dev graphviz pkg-config && 
 
 USER jovyan
 RUN conda install -y -c rdkit rdkit && conda clean -a
-RUN pip3 install pygraphviz
+RUN pip3 install --no-cache-dir pygraphviz svgutils
