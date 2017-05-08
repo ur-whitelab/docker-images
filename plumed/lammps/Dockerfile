@@ -29,7 +29,7 @@ RUN python Make.py -p standard no-compress no-gpu no-kim no-kokkos no-voronoi no
 RUN make yes-user-plumed
 RUN make -j4 auto && cp lmp_auto /usr/bin/lmp_mpi && make clean-all
 
-RUN ln -s /srv/lmp_mpi /usr/bin/lammps
+RUN ln -s /usr/bin/lmp_mpi /usr/bin/lammps
 
 ENV SHELL /bin/bash
 ENV USER whitelab
