@@ -10,21 +10,18 @@ RUN apt-get update
 RUN apt-get install -y git make gcc gfortran wget bc python-dev fftw3-dev mpich g++ libjpeg-dev libpng-dev libblas-dev libgsl0-dev xxd && apt-get clean
 
 #RUN echo bus=greagr
-COPY plumed2.tar /srv
-RUN cd /srv && tar -xf /srv/plumed2.tar && mv plumed2 plumed && ls /srv/plumed
-
-WORKDIR /srv/plumed
-#RUN git checkout cn-moment-pr
-RUN ./configure --enable-modules=all && make -j4 && make install && make clean
+COPY plumed1.tar /srv
+RUN cd /srv && tar -xf /srv/plumed1.tar && mv plumed-pinion plumed
 
 
 RUN git clone https://github.com/lammps/lammps.git /srv/lammps && cd /srv/lammps && git checkout ae56b9a
 
 WORKDIR /srv/lammps
-RUN echo 5 | plumed patch -p
+RUN cp /srv/plumed/patches/plumedpatch_lammps_28-6-2014.sh . &&  env plumedir=/srv/plumed ./plumedpatch_lammps_28-6-2014.sh -patch
 
 WORKDIR /srv/lammps/src
-RUN python Make.py -m ubuntu -fft fftw3 -a file
+RUN python Make.py -m ubuntu -fft fftw3 -a file -flags CCFLAGS add 2 DLAMMPS_PLUMED DDUMP_EDS
+#RUN python Make.py -m ubuntu -fft fftw3 -a file -flags CCFLAGS add 1 DLAMMPS_PLUMED 
 RUN python Make.py -a lib-meam lib-poems lib-reax
 RUN python Make.py -p standard no-compress no-gpu no-kim no-kokkos no-voronoi no-mscg
 RUN make yes-user-plumed
