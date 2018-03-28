@@ -1,17 +1,18 @@
 # Copyright (c) University of Rochester
 # Distributed under GPL License 3.0
 # ------------------------------------------------
-# Dockerfile to run lammps on a debian base install with plumed 
+# Dockerfile to run lammps on a debian base install with plumed
 
 FROM debian:sid
 MAINTAINER Andrew White <andrew.white@rochester.edu>
 
 RUN apt-get update
-RUN apt-get install -y git make gcc gfortran wget bc python-dev fftw3-dev mpich g++ libjpeg-dev libpng-dev libblas-dev libgsl0-dev xxd && apt-get clean
+RUN apt-get install -y git make gcc gfortran wget bc python-dev fftw3-dev mpich g++ libjpeg-dev libpng-dev libblas-dev libgsl0-dev xxd unzip && apt-get clean
 
 #RUN echo bus=greagr
-COPY plumed2.tar /srv
-RUN cd /srv && tar -xf /srv/plumed2.tar && mv plumed2 plumed && ls /srv/plumed
+#COPY plumed2.zip /srv
+#RUN cd /srv && unzip /srv/plumed2.zip && rm /srv/plumed2.zip && mv plumed2* plumed && ls /srv/plumed
+RUN git clone https://github.com/plumed/plumed2 /srv/plumed
 
 WORKDIR /srv/plumed
 #RUN git checkout cn-moment-pr
