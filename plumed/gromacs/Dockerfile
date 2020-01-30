@@ -14,23 +14,23 @@ RUN cat /etc/apt/sources.list
 RUN apt-get update && apt-get install -y libfftw3-dev git cmake g++ gcc libblas-dev xxd openmpi-bin libopenmpi-dev && apt-get clean
 
 #get plumed
-RUN git clone https://github.com/plumed/plumed2 /srv/plumed
+RUN git clone -b v2.6 https://github.com/plumed/plumed2 /srv/plumed
 WORKDIR /srv/plumed
-RUN ./configure --enable-modules=all && make -j4 && make install && make clean
+RUN ./configure --enable-modules=all --prefix=/usr/share && make -j4 && make install && make clean
 
 #get gromacs
 RUN git clone https://github.com/gromacs/gromacs /srv/gromacs
 WORKDIR /srv/gromacs
-RUN git fetch --tags && git checkout v2016.5
-RUN echo 2 | plumed patch -p
-RUN mkdir build build_mpi
-WORKDIR /srv/gromacs/build
-RUN cmake .. && make -j4 install && make clean
-RUN ln -s /usr/local/gromacs/bin/gmx /usr/bin/gmx
-
-WORKDIR /srv/gromacs/build_mpi
-RUN cmake .. -DGMX_MPI=on && make -j4 install && make clean
-RUN ln -s /usr/local/gromacs/bin/gmx_mpi /usr/bin/gmx_mpi
+RUN git fetch --tags && git checkout v2019.1
+RUN /bin/bash -c "source /srv/plumed/sourceme.sh";\
+    echo 2 | plumed patch -p;\
+    mkdir build build_mpi;\
+    cd /srv/gromacs/build;\
+    cmake .. && make -j4 install && make clean;\
+    ln -s /usr/local/gromacs/bin/gmx /usr/bin/gmx;\
+    cd ../build_mpi;\
+    cmake .. -DGMX_MPI=on && make -j4 install && make clean;\
+    ln -s /usr/local/gromacs/bin/gmx_mpi /usr/bin/gmx_mpi;
 
 
 ENV SHELL /bin/bash
